@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Obsidian Creative — Visuals That Build Brands</title>
+    <meta name="description" content="Obsidian Creative designs premium carousel ads and AI-powered visuals for modern brands and digital campaigns." />
+    <meta property="og:title" content="Obsidian Creative — Visuals That Build Brands" />
+    <meta property="og:description" content="Premium carousel ads, AI creatives and high-end social media design for ambitious modern brands." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- Preconnect to Supabase for hero images — eliminates DNS/TLS latency -->
+    <link rel="preconnect" href="https://qclrxnuiorhayaytvjke.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="https://qclrxnuiorhayaytvjke.supabase.co" />
+
+    <!-- Prefetch the hero_showcase API call so data is ready before JS hydrates -->
+    <link
+      rel="preload"
+      as="fetch"
+      crossorigin="anonymous"
+      href="https://qclrxnuiorhayaytvjke.supabase.co/rest/v1/hero_showcase?is_visible=eq.true&order=position.asc&select=*"
+    />
+
+    <!-- Inline critical: prevent FOUC with dark background while JS loads -->
+    <style>
+      html, body { background: oklch(0.12 0.005 260); margin: 0; }
+      #root:empty {
+        min-height: 100vh;
+        background: oklch(0.12 0.005 260);
+      }
+    </style>
+
+    <!-- Preload hero background image (bundled asset — path set by Vite at build) -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Eagerly fetch hero images so they're in browser cache before React renders -->
+    <script>
+      (function() {
+        var SUPABASE_URL = 'https://qclrxnuiorhayaytvjke.supabase.co';
+        var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjbHJ4bnVpb3JoYXlheXR2amtlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NzIyMjEsImV4cCI6MjA5NDE0ODIyMX0.9wgyJpUAFRie5XEZ7NfAQVwF6JzNaU0_tPhOZY74QVI';
+
+        fetch(SUPABASE_URL + '/rest/v1/hero_showcase?is_visible=eq.true&order=position.asc&select=*', {
+          headers: {
+            'apikey': ANON_KEY,
+            'Authorization': 'Bearer ' + ANON_KEY
+          }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(images) {
+          if (!images || !images.length) return;
+          // Preload each hero image into browser cache
+          images.forEach(function(img) {
+            if (img.image_url) {
+              var link = document.createElement('link');
+              link.rel = 'preload';
+              link.as = 'image';
+              link.href = img.image_url;
+              link.crossOrigin = 'anonymous';
+              document.head.appendChild(link);
+            }
+          });
+        })
+        .catch(function() { /* silent — app will still load normally */ });
+      })();
+    </script>
+  </body>
+</html>
